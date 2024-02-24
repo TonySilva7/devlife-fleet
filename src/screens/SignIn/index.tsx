@@ -1,10 +1,12 @@
-import { Text, View } from 'react-native'
-import { styles } from './styles'
+import { Container, Title, Slogan } from './styles'
+import backgroundImg from '../../assets/background.png'
 
 export default function SignIn() {
   return (
-    <View style={styles.container}>
-      <Text>Hello Tony</Text>
-    </View>
+    <Container source={backgroundImg}>
+      <Title>Ignite Fleet</Title>
+
+      <Slogan>Gestão de uso de veículos</Slogan>
+    </Container>
   )
 }
