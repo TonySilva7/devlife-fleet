@@ -4,6 +4,7 @@ import SignIn from './src/screens/SignIn'
 import theme from './src/theme'
 import { Loading } from './src/components/Loading'
 import { StatusBar } from 'react-native'
+import { ANDROID_CLIENT_ID } from '@env'
 import {
   useFonts,
   Roboto_400Regular,
@@ -11,6 +12,8 @@ import {
 } from '@expo-google-fonts/roboto'
 
 export default function App() {
+  console.log(ANDROID_CLIENT_ID)
+
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
