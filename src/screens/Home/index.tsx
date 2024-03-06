@@ -3,7 +3,7 @@ import { HomeHeader } from '../../components/HomeHeader'
 import { CarStatus } from '../../components/CardStatus'
 import { useNavigation } from '@react-navigation/native'
 
-import { useQuery } from '../../libs/realm'
+import { useQuery, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 
 import { useCallback, useEffect, useState } from 'react'
@@ -12,6 +12,7 @@ import { Alert } from 'react-native'
 export function Home() {
   const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null)
 
+  const realm = useRealm()
   const historic = useQuery(Historic)
 
   const { navigate } = useNavigation()
@@ -24,7 +25,7 @@ export function Home() {
     }
   }
 
-  const fetchVehicle = useCallback(() => {
+  const fetchVehicleInUse = useCallback(() => {
     try {
       const vehicle = historic.filtered('status="departure"')[0]
       setVehicleInUse(vehicle)
@@ -38,8 +39,12 @@ export function Home() {
   }, [historic])
 
   useEffect(() => {
-    fetchVehicle()
-  }, [fetchVehicle])
+    realm.addListener('change', fetchVehicleInUse)
+
+    return () => {
+      realm.removeListener('change', fetchVehicleInUse)
+    }
+  }, [])
 
   return (
     <Container>
