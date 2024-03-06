@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+import 'react-native-get-random-values'
+
 import { AppProvider, UserProvider } from '@realm/react'
 import { ThemeProvider } from 'styled-components/native'
 import SignIn from './src/screens/SignIn'
