@@ -62,7 +62,7 @@ export function Departure() {
           'Historic',
           Historic.generate({
             user_id: user.id,
-            license_plate: licensePlate,
+            license_plate: licensePlate.toUpperCase(),
             description,
           }),
         )
