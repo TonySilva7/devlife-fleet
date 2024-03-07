@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import 'react-native-get-random-values'
+import './src/libs/dayjs'
 
 import { AppProvider, UserProvider } from '@realm/react'
 import { ThemeProvider } from 'styled-components/native'
