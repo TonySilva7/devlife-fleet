@@ -10,7 +10,7 @@ import { useUser } from '@realm/react'
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 
-import { Alert, Platform, ScrollView, TextInput } from 'react-native'
+import { Alert, ScrollView, TextInput } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Button } from '../../components/Button'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
@@ -23,9 +23,6 @@ export function Departure() {
   const realm = useRealm()
   const user = useUser()
   const { goBack } = useNavigation()
-
-  const keyboardAvoidingViewBehavior =
-    Platform.OS === 'android' ? 'height' : 'position'
 
   const descriptionRef = useRef<TextInput>(null)
   const licensePlateRef = useRef<TextInput>(null)

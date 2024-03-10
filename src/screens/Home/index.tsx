@@ -11,6 +11,7 @@ import { Alert, FlatList } from 'react-native'
 import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard'
 import dayjs from 'dayjs'
 import { useUser } from '@realm/react'
+import { ProgressDirection, ProgressMode } from 'realm'
 
 export function Home() {
   const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null)
@@ -71,6 +72,12 @@ export function Home() {
     navigate('arrival', { id })
   }
 
+  function progressNotification(transferred: number, transferable: number) {
+    const percentage = (transferred / transferable) * 100
+
+    console.log('TRANSFERIDO => ', `${percentage}%`)
+  }
+
   useEffect(() => {
     fetchVehicleInUse()
   }, [fetchVehicleInUse])
@@ -99,6 +106,24 @@ export function Home() {
       mutableSubs.add(historyByUserQuery, { name: 'history-by-user' })
     })
   }, [realm, user.id])
+
+  useEffect(() => {
+    const syncSession = realm.syncSession
+
+    if (!syncSession) {
+      return
+    }
+
+    syncSession.addProgressNotification(
+      ProgressDirection.Upload,
+      ProgressMode.ReportIndefinitely,
+      progressNotification,
+    )
+
+    return () => {
+      syncSession.removeProgressNotification(progressNotification)
+    }
+  }, [])
 
   return (
     <Container>

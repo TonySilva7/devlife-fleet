@@ -2,13 +2,14 @@
 import 'react-native-get-random-values'
 import './src/libs/dayjs'
 
+import { useNetInfo } from '@react-native-community/netinfo'
 import { AppProvider, UserProvider } from '@realm/react'
+import { WifiSlash } from 'phosphor-react-native'
 import { ThemeProvider } from 'styled-components/native'
 import SignIn from './src/screens/SignIn'
 import theme from './src/theme'
-import { WifiSlash } from 'phosphor-react-native'
 
-import { ANDROID_CLIENT_ID, REALM_APP_ID } from '@env'
+import { REALM_APP_ID } from '@env'
 import {
   Roboto_400Regular,
   Roboto_700Bold,
@@ -16,14 +17,14 @@ import {
 } from '@expo-google-fonts/roboto'
 import React from 'react'
 import { StatusBar } from 'react-native'
-import { Loading } from './src/components/Loading'
-import { Routes } from './src/routes'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { RealmProvider, syncConfig } from './src/libs/realm'
+import { Loading } from './src/components/Loading'
 import { TopMessage } from './src/components/TopMessage'
+import { RealmProvider, syncConfig } from './src/libs/realm'
+import { Routes } from './src/routes'
 
 export default function App() {
-  console.log(ANDROID_CLIENT_ID)
+  const netInfo = useNetInfo()
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -43,7 +44,9 @@ export default function App() {
             backgroundColor="transparent"
             translucent
           />
-          <TopMessage title="Você está off-line" icon={WifiSlash} />
+          {!netInfo.isConnected && (
+            <TopMessage title="Você está off-line" icon={WifiSlash} />
+          )}
           <UserProvider fallback={SignIn}>
             <RealmProvider sync={syncConfig} fallback={Loading}>
               <Routes />
