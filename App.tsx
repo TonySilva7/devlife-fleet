@@ -6,6 +6,7 @@ import { AppProvider, UserProvider } from '@realm/react'
 import { ThemeProvider } from 'styled-components/native'
 import SignIn from './src/screens/SignIn'
 import theme from './src/theme'
+import { WifiSlash } from 'phosphor-react-native'
 
 import { ANDROID_CLIENT_ID, REALM_APP_ID } from '@env'
 import {
@@ -18,7 +19,8 @@ import { StatusBar } from 'react-native'
 import { Loading } from './src/components/Loading'
 import { Routes } from './src/routes'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { RealmProvider } from './src/libs/realm'
+import { RealmProvider, syncConfig } from './src/libs/realm'
+import { TopMessage } from './src/components/TopMessage'
 
 export default function App() {
   console.log(ANDROID_CLIENT_ID)
@@ -41,8 +43,9 @@ export default function App() {
             backgroundColor="transparent"
             translucent
           />
+          <TopMessage title="Você está off-line" icon={WifiSlash} />
           <UserProvider fallback={SignIn}>
-            <RealmProvider>
+            <RealmProvider sync={syncConfig} fallback={Loading}>
               <Routes />
             </RealmProvider>
           </UserProvider>
