@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Header } from '../../components/Header'
 import { LicensePlateInput } from '../../components/LicensePlateInput'
 import { TextAreaInput } from '../../components/TextAreaInput'
-import { Container, Content } from './styles'
+import { Container, Content, Message } from './styles'
 
 import { useNavigation } from '@react-navigation/native'
 import { useUser } from '@realm/react'
@@ -14,6 +14,12 @@ import { Alert, ScrollView, TextInput } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Button } from '../../components/Button'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
+import {
+  useForegroundPermissions,
+  watchPositionAsync,
+  LocationAccuracy,
+  LocationSubscription,
+} from 'expo-location'
 
 export function Departure() {
   const [description, setDescription] = useState('')
@@ -22,6 +28,9 @@ export function Departure() {
 
   const realm = useRealm()
   const user = useUser()
+  const [locationForegroundPermission, requestLocationForegroundPermission] =
+    useForegroundPermissions()
+
   const { goBack } = useNavigation()
 
   const descriptionRef = useRef<TextInput>(null)
@@ -68,6 +77,44 @@ export function Departure() {
       Alert.alert('Erro', 'Não possível registrar a saída do veículo.')
       setIsRegistering(false)
     }
+  }
+
+  useEffect(() => {
+    requestLocationForegroundPermission()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!locationForegroundPermission?.granted) {
+      return
+    }
+
+    let subscription: LocationSubscription
+
+    watchPositionAsync(
+      {
+        accuracy: LocationAccuracy.High,
+        timeInterval: 1000,
+      },
+      (location) => {
+        console.log(location)
+      },
+    ).then((response) => (subscription = response))
+
+    return () => subscription.remove()
+  }, [locationForegroundPermission?.granted])
+
+  if (!locationForegroundPermission?.granted) {
+    return (
+      <Container>
+        <Header title="Saída" />
+        <Message>
+          Você precisa permitir que o aplicativo tenha acesso a localização para
+          acessar essa funcionalidade. Por favor, acesse as configurações do seu
+          dispositivo para conceder a permissão ao aplicativo.
+        </Message>
+      </Container>
+    )
   }
 
   return (
