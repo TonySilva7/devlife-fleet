@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Header } from '../../components/Header'
+import { LocationInfo } from '../../components/LocationInfo'
+
 import { LicensePlateInput } from '../../components/LicensePlateInput'
 import { TextAreaInput } from '../../components/TextAreaInput'
 import { Container, Content, Message } from './styles'
@@ -9,6 +11,7 @@ import { useUser } from '@realm/react'
 
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
+import { Loading } from '../../components/Loading'
 
 import { Alert, ScrollView, TextInput } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -26,6 +29,8 @@ export function Departure() {
   const [description, setDescription] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
   const [isRegistering, setIsRegistering] = useState(false)
+  const [isLoadingLocation, setIsLoadingLocation] = useState(true)
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null)
 
   const realm = useRealm()
   const user = useUser()
@@ -98,14 +103,21 @@ export function Departure() {
         timeInterval: 1000,
       },
       (location) => {
-        console.log(location)
         getAddressLocation(location.coords).then((address) => {
-          console.log(address)
+          if (address) {
+            setCurrentAddress(address)
+          }
         })
       },
-    ).then((response) => (subscription = response))
+    )
+      .then((response) => (subscription = response))
+      .finally(() => setIsLoadingLocation(false))
 
-    return () => subscription.remove()
+    return () => {
+      if (subscription) {
+        subscription.remove()
+      }
+    }
   }, [locationForegroundPermission?.granted])
 
   if (!locationForegroundPermission?.granted) {
@@ -121,6 +133,10 @@ export function Departure() {
     )
   }
 
+  if (isLoadingLocation) {
+    return <Loading />
+  }
+
   return (
     <Container>
       <Header title="Saída" />
@@ -128,6 +144,12 @@ export function Departure() {
       <KeyboardAwareScrollView extraHeight={100}>
         <ScrollView>
           <Content>
+            {currentAddress && (
+              <LocationInfo
+                label="Localização atual"
+                description={currentAddress}
+              />
+            )}
             <LicensePlateInput
               ref={licensePlateRef}
               label="Placa do veículo"
