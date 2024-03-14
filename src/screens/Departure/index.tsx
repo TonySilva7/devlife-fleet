@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Header } from '../../components/Header'
 import { LocationInfo } from '../../components/LocationInfo'
+import { CarSimple } from 'phosphor-react-native'
 
 import { LicensePlateInput } from '../../components/LicensePlateInput'
 import { TextAreaInput } from '../../components/TextAreaInput'
@@ -146,6 +147,7 @@ export function Departure() {
           <Content>
             {currentAddress && (
               <LocationInfo
+                icon={CarSimple}
                 label="Localização atual"
                 description={currentAddress}
               />
