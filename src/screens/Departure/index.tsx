@@ -85,6 +85,7 @@ export function Departure() {
         )
       }
 
+      // Monitora a localização em background
       await startLocationTask()
 
       realm.write(() => {
