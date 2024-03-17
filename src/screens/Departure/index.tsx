@@ -25,6 +25,7 @@ import { Button } from '../../components/Button'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { Map } from '../../components/Map'
+import { startLocationTask } from '../../tasks/backgroundLocationTask'
 
 export function Departure() {
   const [description, setDescription] = useState('')
@@ -83,6 +84,8 @@ export function Departure() {
           'É necessário permitir que o App tenha acesso localização em segundo plano. Acesse as configurações do dispositivo e habilite "Permitir o tempo todo."',
         )
       }
+
+      await startLocationTask()
 
       realm.write(() => {
         realm.create(
