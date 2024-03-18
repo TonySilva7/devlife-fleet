@@ -21,6 +21,7 @@ import { Historic } from '../../libs/realm/schemas/Historic'
 import { BSON } from 'realm'
 import { Alert } from 'react-native'
 import { useEffect, useState } from 'react'
+import { stopLocationTask } from '../../tasks/backgroundLocationTask'
 
 type RouteParamProps = {
   id: string
@@ -55,7 +56,7 @@ export function Arrival() {
     ])
   }
 
-  function handleArrivalRegister() {
+  async function handleArrivalRegister() {
     try {
       if (!historic) {
         return Alert.alert(
@@ -63,6 +64,11 @@ export function Arrival() {
           'Não foi possível obter os dados para registrar a chegada do veículo.',
         )
       }
+
+      /**
+       * Interrompe o monitoramento de localização em background
+       */
+      await stopLocationTask()
 
       realm.write(() => {
         historic.status = 'arrival'

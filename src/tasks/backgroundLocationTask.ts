@@ -6,6 +6,8 @@ import {
   stopLocationUpdatesAsync,
 } from 'expo-location'
 
+import { saveStorageLocation } from '../libs/asyncStorage/locationStorage'
+
 type ICoords = {
   latitude: number
   longitude: number
@@ -32,17 +34,20 @@ TaskManager.defineTask<IData>(BACKGROUND_TASK_NAME, async ({ data, error }) => {
       throw error
     }
 
-    const { coords, timestamp } = data.locations[0]
+    if (data) {
+      const { coords, timestamp } = data.locations[0]
 
-    const currentLocation = {
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      timestamp,
+      const currentLocation = {
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        timestamp,
+      }
+
+      await saveStorageLocation(currentLocation)
     }
-
-    console.log(currentLocation)
   } catch (error) {
     console.log(error)
+    stopLocationTask()
   }
 })
 
