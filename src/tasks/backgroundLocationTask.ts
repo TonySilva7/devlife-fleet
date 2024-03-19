@@ -6,7 +6,10 @@ import {
   stopLocationUpdatesAsync,
 } from 'expo-location'
 
-import { saveStorageLocation } from '../libs/asyncStorage/locationStorage'
+import {
+  saveStorageLocation,
+  removeStorageLocations,
+} from '../libs/asyncStorage/locationStorage'
 
 type ICoords = {
   latitude: number
@@ -62,6 +65,7 @@ export async function startLocationTask() {
 
     if (hasStarted) {
       await stopLocationTask()
+      await removeStorageLocations()
     }
 
     await startLocationUpdatesAsync(BACKGROUND_TASK_NAME, {
