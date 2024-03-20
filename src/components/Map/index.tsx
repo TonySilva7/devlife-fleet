@@ -31,6 +31,8 @@ export function Map({ coordinates, ...rest }: Props) {
     })
   }
 
+  console.log('coordinates =====>> ', coordinates)
+
   return (
     <MapView
       ref={mapRef}
@@ -50,7 +52,7 @@ export function Map({ coordinates, ...rest }: Props) {
         <IconBox size="SMALL" icon={Car} />
       </Marker>
 
-      {coordinates.length > 1 && (
+      {coordinates.length > 1 && lastCoordinate && (
         <>
           <Marker identifier="arrival" coordinate={lastCoordinate}>
             <IconBox size="SMALL" icon={FlagCheckered} />
