@@ -29,6 +29,7 @@ import { Locations } from '../../components/Locations'
 import dayjs from 'dayjs'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { LocationInfoProps } from '../../components/LocationInfo'
+import { Loading } from '../../components/Loading'
 
 type RouteParamProps = {
   id: string
@@ -41,6 +42,7 @@ export function Arrival() {
     {} as LocationInfoProps,
   )
   const [arrival, setArrival] = useState<LocationInfoProps | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const route = useRoute()
 
@@ -143,11 +145,17 @@ export function Arrival() {
         ),
       })
     }
+
+    setIsLoading(false)
   }, [historic])
 
   useEffect(() => {
     getLocationsInfo()
   }, [getLocationsInfo])
+
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <Container>
